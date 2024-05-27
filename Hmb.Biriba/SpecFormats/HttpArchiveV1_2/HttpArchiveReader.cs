@@ -40,6 +40,10 @@ public class HttpArchiveReader
             {
                 ParametricContent parametricContent = new ParametricContent();
                 parametricContent.MediaType = entry.request.postData?.mimeType;
+                if (parametricContent.MediaType is null && parametricRequest.Headers.TryGetValue("Content-Type", out string? contentType))
+                {
+                    parametricContent.MediaType = contentType;
+                }
                 parametricContent.Content = entry.request.postData?.text;
                 parametricRequest.Content = parametricContent;
             }

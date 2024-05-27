@@ -14,7 +14,8 @@ services.AddSingleton<JsonSerialization>();
 IServiceProvider serviceProvider = services.BuildServiceProvider();
 
 //string url = @"https://raw.githubusercontent.com/okta/okta-sdk-test-server/master/scenarios/user-change-password.har";
-string url = @"https://raw.githubusercontent.com/tetreum/clicktrade-etf/main/insomnia_request.har";
+//string url = @"https://raw.githubusercontent.com/tetreum/clicktrade-etf/main/insomnia_request.har";
+string url = @"C:\Users\hfmad\Downloads\sistemas.inec.cr.har";
 FileReader fileReader = serviceProvider.GetRequiredService<FileReader>();
 using Stream fileStream = await fileReader.GetStreamAsync(url);
 HttpArchiveReader httpArchiveReader = serviceProvider.GetRequiredService<HttpArchiveReader>();

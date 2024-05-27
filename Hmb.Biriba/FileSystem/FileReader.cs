@@ -16,7 +16,7 @@ public class FileReader
     {
         ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
 
-        if (!Uri.TryCreate(path, UriKind.Absolute, out var uri))
+        if (!Uri.TryCreate(path, UriKind.Absolute, out var uri) || uri.Scheme.Equals(Uri.UriSchemeFile, StringComparison.OrdinalIgnoreCase))
         {
             return GetStreamFromLocalFileAsync(path);
         }
