@@ -1,5 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using Hmb.Biriba.SpecFormats.HttpArchive;
+using Hmb.Biriba.SpecFormats.HttpArchiveV1_2;
 using Hmb.Biriba.FileSystem;
 using Hmb.Biriba.Models;
 using Hmb.Biriba.Serialization;

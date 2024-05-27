@@ -1,7 +1,7 @@
 ﻿using Hmb.Biriba.Models;
 using Hmb.Biriba.Serialization;
 
-namespace Hmb.Biriba.SpecFormats.HttpArchive;
+namespace Hmb.Biriba.SpecFormats.HttpArchiveV1_2;
 
 public class HttpArchiveReader
 {
