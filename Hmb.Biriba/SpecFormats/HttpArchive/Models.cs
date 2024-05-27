@@ -1,4 +1,4 @@
-﻿namespace Hmb.Biriba.DocumentFormats.HttpArchive
+﻿namespace Hmb.Biriba.SpecFormats.HttpArchive
 {
 
 #nullable disable
