@@ -45,6 +45,14 @@ public class HttpArchiveReader
                 parametricRequest.Content = parametricContent;
             }
 
+            if (entry.request?.queryString is not null)
+            {
+                foreach (QueryString queryString in entry.request.queryString)
+                {
+                    parametricRequest.QueryString.Add(queryString.name, queryString.value);
+                }
+            }
+
             yield return parametricRequest;
         }
     }
