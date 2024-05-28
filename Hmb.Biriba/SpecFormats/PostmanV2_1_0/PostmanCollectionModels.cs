@@ -180,7 +180,7 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         /// When the cookie expires.
         /// </summary>
         [System.Text.Json.Serialization.JsonPropertyName("expires")]
-        public string? Expires { get; set; } = null;
+        public string? Expires { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("maxAge")]
         public string? MaxAge { get; set; }
@@ -338,7 +338,7 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public bool? Disabled { get; set; } = false;
 
         [System.Text.Json.Serialization.JsonPropertyName("description")]
-        public Description2? Description { get; set; } = null;
+        public Description? Description { get; set; }
 
         [JsonExtensionData]
         public Dictionary<string, JsonElement>? AdditionalProperties { get; set; }
@@ -348,6 +348,10 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
     /// <summary>
     /// Detailed description of the info block
     /// </summary>
+    [JsonDerivedType(typeof(Info1))]
+    [JsonDerivedType(typeof(Info2))]
+    [JsonDerivedType(typeof(Info3))]
+    [JsonDerivedType(typeof(Info4))]
     public partial class Info
     {
         /// <summary>
@@ -364,12 +368,6 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         [System.Text.Json.Serialization.JsonPropertyName("_postman_id")]
         public string? _postman_id { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("description")]
-        public Description2? Description { get; set; } = null;
-
-        [System.Text.Json.Serialization.JsonPropertyName("version")]
-        public Version2? Version { get; set; }
-
         /// <summary>
         /// This should ideally hold a link to the Postman schema that is used to validate this collection. E.g: https://schema.getpostman.com/collection/v1
         /// </summary>
@@ -384,6 +382,42 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
 
     }
 
+    public partial class Info1 : Info
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("description")]
+        public Description? Description { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("version")]
+        public Version? Version { get; set; }
+    }
+
+    public partial class Info2 : Info
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("description")]
+        public string? Description { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("version")]
+        public Version? Version { get; set; }
+    }
+
+    public partial class Info3 : Info
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("description")]
+        public Description? Description { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("version")]
+        public string? Version { get; set; }
+    }
+
+    public partial class Info4 : Info
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("description")]
+        public string? Description { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("version")]
+        public string? Version { get; set; }
+    }
+
     /// <summary>
     /// One of the primary goals of Postman is to organize the development of APIs. To this end, it is necessary to be able to group requests together. This can be achived using 'Folders'. A folder just is an ordered set of requests.
     /// </summary>
@@ -396,7 +430,7 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public string? Name { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("description")]
-        public Description2? Description { get; set; } = null;
+        public Description? Description { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("variable")]
         public VariableList? Variable { get; set; }
@@ -412,7 +446,7 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public EventList? Event { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("auth")]
-        public Auth? Auth { get; set; } = null;
+        public Auth? Auth { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("protocolProfileBehavior")]
         public ProtocolProfileBehavior? ProtocolProfileBehavior { get; set; }
@@ -442,7 +476,7 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public string? Name { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("description")]
-        public Description2? Description { get; set; } = null;
+        public Description? Description { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("variable")]
         public VariableList? Variable { get; set; }
@@ -560,16 +594,16 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         /// The time taken by the request to complete. If a number, the unit is milliseconds. If the response is manually created, this can be set to `null`.
         /// </summary>
         [System.Text.Json.Serialization.JsonPropertyName("responseTime")]
-        public double? ResponseTime { get; set; } = null;
+        public double? ResponseTime { get; set; }
 
         /// <summary>
         /// Set of timing information related to request and response in milliseconds
         /// </summary>
         [System.Text.Json.Serialization.JsonPropertyName("timings")]
-        public object? Timings { get; set; } = null;
+        public object? Timings { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("header")]
-        public System.Collections.Generic.ICollection<Header>? Header { get; set; } = null;
+        public System.Collections.Generic.ICollection<Header>? Header { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("cookie")]
         public System.Collections.Generic.ICollection<Cookie>? Cookie { get; set; }
@@ -578,7 +612,7 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         /// The raw text of the response.
         /// </summary>
         [System.Text.Json.Serialization.JsonPropertyName("body")]
-        public string? Body { get; set; } = null;
+        public string? Body { get; set; }
 
         /// <summary>
         /// The response status, e.g: '200 OK'
@@ -702,7 +736,7 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public string? Name { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("description")]
-        public Description2? Description { get; set; } = null;
+        public Description? Description { get; set; }
 
         /// <summary>
         /// When set to true, indicates that this variable has been set by Postman
@@ -732,15 +766,6 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
 
     }
 
-    public partial class Version2
-    {
-
-
-        [JsonExtensionData]
-        public Dictionary<string, JsonElement>? AdditionalProperties { get; set; }
-
-    }
-
     public partial class PostmanCollectionDocument
     {
         [System.Text.Json.Serialization.JsonPropertyName("info")]
@@ -761,7 +786,7 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public VariableList? Variable { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("auth")]
-        public Auth? Auth { get; set; } = null;
+        public Auth? Auth { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("protocolProfileBehavior")]
         public ProtocolProfileBehavior? ProtocolProfileBehavior { get; set; }
@@ -918,10 +943,10 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
     public partial class Query
     {
         [System.Text.Json.Serialization.JsonPropertyName("key")]
-        public string? Key { get; set; } = null;
+        public string? Key { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("value")]
-        public string? Value { get; set; } = null;
+        public string? Value { get; set; }
 
         /// <summary>
         /// If set to true, the current query parameter will not be sent with the request.
@@ -930,7 +955,7 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public bool? Disabled { get; set; } = false;
 
         [System.Text.Json.Serialization.JsonPropertyName("description")]
-        public Description2? Description { get; set; } = null;
+        public Description? Description { get; set; }
 
 
 
@@ -998,7 +1023,7 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public bool? Disabled { get; set; } = false;
 
         [System.Text.Json.Serialization.JsonPropertyName("description")]
-        public Description2? Description { get; set; } = null;
+        public Description? Description { get; set; }
 
 
 
@@ -1019,7 +1044,7 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
     public partial class File
     {
         [System.Text.Json.Serialization.JsonPropertyName("src")]
-        public string? Src { get; set; } = null;
+        public string? Src { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("content")]
         public string? Content { get; set; }
