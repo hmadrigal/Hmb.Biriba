@@ -204,57 +204,36 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public SourceUri? Source { get; init; }
     }
 
-    [JsonDerivedType(typeof(SourceUriWithRawHostRawPath))]
-    [JsonDerivedType(typeof(SourceUriWithArrayHostRawPath))]
-    [JsonDerivedType(typeof(SourceUriWithRawHostArrayPath))]
-    [JsonDerivedType(typeof(SourceUriWithArrayHostArrayPath))]
     public record SourceUri
     {
         [JsonPropertyName("raw")]
         public string? Raw { get; init; }
+
         [JsonPropertyName("protocol")]
         public string? Protocol { get; init; }
+
+        [JsonConverter(typeof(StringArrayJsonConverter))]
+        [JsonPropertyName("host")]
+        public string[]? Host { get; init; }
+
         [JsonPropertyName("port")]
         public string? Port { get; init; }
-        [JsonPropertyName("hash")]
-        public string? Hash { get; init; }
-        [JsonPropertyName("variable")]
-        public Variable[]? Variable { get; init; }
+
+        [JsonConverter(typeof(StringArrayJsonConverter))]
+        [JsonPropertyName("path")]
+        public string[]? Path { get; init; }
+
         [JsonPropertyName("query")]
         public QueryParam[]? Query { get; init; }
+
+        [JsonPropertyName("hash")]
+        public string? Hash { get; init; }
+
+        [JsonPropertyName("variable")]
+        public Variable[]? Variable { get; init; }
     }
 
-    public record SourceUriWithRawHostRawPath : SourceUri
-    {
-        [JsonPropertyName("host")]
-        public string? Host { get; init; }
-        [JsonPropertyName("path")]
-        public string? Path { get; init; }
-    }
 
-    public record SourceUriWithArrayHostRawPath : SourceUri
-    {
-        [JsonPropertyName("host")]
-        public string[]? Host { get; init; }
-        [JsonPropertyName("path")]
-        public string? Path { get; init; }
-    }
-
-    public record SourceUriWithRawHostArrayPath : SourceUri
-    {
-        [JsonPropertyName("host")]
-        public string? Host { get; init; }
-        [JsonPropertyName("path")]
-        public string[]? Path { get; init; }
-    }
-
-    public record SourceUriWithArrayHostArrayPath : SourceUri
-    {
-        [JsonPropertyName("host")]
-        public string[]? Host { get; init; }
-        [JsonPropertyName("path")]
-        public string[]? Path { get; init; }
-    }
 
     public record QueryParam
     {
