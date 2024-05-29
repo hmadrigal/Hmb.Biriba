@@ -9,6 +9,7 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         [JsonPropertyName("info")]
         public Information Information { get; init; }
 
+        [JsonConverter(typeof(ItemArrayJsonConverter))]
         [JsonPropertyName("item")]
         public Item[] Items { get; init; }
 
