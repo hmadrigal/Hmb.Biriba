@@ -28,10 +28,6 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
     /// <summary>
     /// Detailed description of the info block
     /// </summary>
-    [JsonDerivedType(typeof(InformationWithRawDescriptionAndRawVersion))]
-    [JsonDerivedType(typeof(InformationWithObjectDescriptionAndRawVersion))]
-    [JsonDerivedType(typeof(InformationWithRawDescriptionAndObjectVersion))]
-    [JsonDerivedType(typeof(InformationWithObjectDescriptionAndObjectVersion))]
     public record Information
     {
         /// <summary>
@@ -52,56 +48,24 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         /// </summary>
         [JsonPropertyName("schema")]
         public string Schema { get; init; }
-    }
 
-    /// <inheritdoc/>
-    public record InformationWithRawDescriptionAndRawVersion : Information
-    {
-        [JsonPropertyName("description")]
-        public string? Description { get; init; }
-
-        [JsonPropertyName("version")]
-        public string? Version { get; init; }
-    }
-
-    /// <inheritdoc/>
-    public record InformationWithObjectDescriptionAndRawVersion : Information
-    {
+        [JsonConverter(typeof(DescriptionJsonConverter))]
         [JsonPropertyName("description")]
         public Description? Description { get; init; }
 
-        [JsonPropertyName("version")]
-        public string? Version { get; init; }
-    }
-
-    /// <inheritdoc/>
-    public record InformationWithRawDescriptionAndObjectVersion : Information
-    {
-        [JsonPropertyName("description")]
-        public string? Description { get; init; }
-
+        [JsonConverter(typeof(VersionJsonConverter))]
         [JsonPropertyName("version")]
         public Version? Version { get; init; }
     }
 
-    /// <inheritdoc/>
-    public record InformationWithObjectDescriptionAndObjectVersion : Information
-    {
-        [JsonPropertyName("description")]
-        public Description? Description { get; init; }
-
-        [JsonPropertyName("version")]
-        public Version? Version { get; init; }
-    }
-
-    [JsonDerivedType(typeof(ItemSingleRawRequest))]
-    [JsonDerivedType(typeof(ItemSingleObjectRequest))]
-    [JsonDerivedType(typeof(ItemMany))]
+    [JsonDerivedType(typeof(FolderItem))]
+    [JsonDerivedType(typeof(RequestItem))]
     public record Item
     {
         [JsonPropertyName("name")]
         public string Name { get; init; }
 
+        [JsonConverter(typeof(DescriptionJsonConverter))]
         [JsonPropertyName("description")]
         public Description? Description { get; init; }
 
@@ -115,37 +79,30 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public ProtocolProfileBehavior? ProtocolProfileBehavior { get; init; }
     }
 
-    public record ItemSingleRawRequest : Item
+    public record FolderItem : Item
     {
-        [JsonPropertyName("id")]
-        public string? Id { get; init; }
-
-        [JsonPropertyName("request")]
-        public string Request { get; init; }
-
-        //[JsonPropertyName("response")]
-        //public Response[]? Response { get; init; }
-    }
-
-    public record ItemSingleObjectRequest : Item
-    {
-        [JsonPropertyName("id")]
-        public string? Id { get; init; }
-
-        [JsonPropertyName("request")]
-        public Request Request { get; init; }
-
-        //[JsonPropertyName("response")]
-        //public Response[]? Response { get; init; }
-    }
-
-    public record ItemMany : Item
-    {
+        [JsonConverter(typeof(ItemArrayJsonConverter))]
         [JsonPropertyName("item")]
         public Item[]? Items { get; init; }
+
         [JsonPropertyName("auth")]
         public Authentication[]? Authentication { get; init; }
     }
+
+    public record RequestItem : Item
+    {
+
+        [JsonPropertyName("id")]
+        public string? Id { get; init; }
+
+        //[JsonConverter(typeof(RequestJsonConverter))]
+        //[JsonPropertyName("request")]
+        //public Request Request { get; init; }
+
+        //[JsonPropertyName("response")]
+        //public Response[]? Response { get; init; }
+    }
+
 
     //public record Response
     //{
@@ -202,15 +159,15 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
     public record Version
     {
         [JsonPropertyName("major")]
-        public int Major { get; init; }
+        public long Major { get; init; }
         [JsonPropertyName("minor")]
-        public int Minor { get; init; }
+        public long Minor { get; init; }
         [JsonPropertyName("patch")]
-        public int Patch { get; init; }
+        public long Patch { get; init; }
         [JsonPropertyName("identifier")]
         public string? Identifier { get; init; }
         [JsonPropertyName("meta")]
-        public Meta? Meta { get; init; }
+        public string? Meta { get; init; }
     }
 
     public record Meta
@@ -338,8 +295,9 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public string? Value { get; init; }
         [JsonPropertyName("disabled")]
         public bool Disabled { get; init; }
+        [JsonConverter(typeof(DescriptionJsonConverter))]
         [JsonPropertyName("description")]
-        public string? Description { get; init; }
+        public Description? Description { get; init; }
     }
 
     public record Variable
@@ -354,8 +312,9 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public string? Type { get; init; }
         [JsonPropertyName("name")]
         public string? Name { get; init; }
+        [JsonConverter(typeof(DescriptionJsonConverter))]
         [JsonPropertyName("description")]
-        public string? Description { get; init; }
+        public Description? Description { get; init; }
         [JsonPropertyName("system")]
         public bool? System { get; init; }
         [JsonPropertyName("disabled")]
