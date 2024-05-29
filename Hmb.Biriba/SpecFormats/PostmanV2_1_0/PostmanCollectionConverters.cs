@@ -163,14 +163,14 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
             if (reader.TokenType == JsonTokenType.String)
             {
                 string? value = reader.GetString();
-                return value is null ? [] : [value];
+                return GenerateStringArray(value);
             }
             return JsonSerializer.Deserialize<string[]?>(ref reader, options);
         }
 
         public override void Write(Utf8JsonWriter writer, string[] value, JsonSerializerOptions options)
         {
-            if (value is null || value.Length > 1)
+            if (IsMultipleStrings(value))
             {
                 JsonSerializer.Serialize<string[]?>(writer, value, options);
             }
@@ -179,6 +179,41 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
                 JsonSerializer.Serialize<string?>(writer, value[0], options);
             }
         }
+
+        protected virtual bool IsMultipleStrings(string[] value)
+        {
+            return value is null || value.Length > 1;
+        }
+
+        protected virtual string[] GenerateStringArray(string? value)
+        {
+            return value is null ? [] : [value];
+        }
+    }
+
+    public abstract class CharSeparatedStringArrayJsonConverter : StringArrayJsonConverter
+    {
+        public abstract char Separator { get; }
+
+        protected override bool IsMultipleStrings(string[] value)
+        {
+            return value is not null && ((value.Length == 1 && value[0].Contains(Separator)) || value.Length > 1) ;
+        }
+
+        protected override string[] GenerateStringArray(string? value)
+        {
+            return value is null ? [] : value.Split(Separator);
+        }
+    }
+
+    public class DotSeparatedStringArrayJsonConverter : CharSeparatedStringArrayJsonConverter
+    {
+        public override char Separator => '.';
+    }
+
+    public class SlashSeparatedStringArrayJsonConverter : CharSeparatedStringArrayJsonConverter
+    {
+        public override char Separator => '/';
     }
 
     public class SourceUriJsonConvert : JsonConverter<SourceUri>

@@ -212,14 +212,14 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         [JsonPropertyName("protocol")]
         public string? Protocol { get; init; }
 
-        [JsonConverter(typeof(StringArrayJsonConverter))]
+        [JsonConverter(typeof(DotSeparatedStringArrayJsonConverter))]
         [JsonPropertyName("host")]
         public string[]? Host { get; init; }
 
         [JsonPropertyName("port")]
         public string? Port { get; init; }
 
-        [JsonConverter(typeof(StringArrayJsonConverter))]
+        [JsonConverter(typeof(SlashSeparatedStringArrayJsonConverter))]
         [JsonPropertyName("path")]
         public string[]? Path { get; init; }
 
