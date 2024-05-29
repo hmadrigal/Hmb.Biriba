@@ -50,10 +50,16 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         [JsonPropertyName("schema")]
         public string Schema { get; init; }
 
+        /// <summary>
+        /// A Description can be a raw text, or be an object, which holds the description along with its format.
+        /// </summary>
         [JsonConverter(typeof(DescriptionJsonConverter))]
         [JsonPropertyName("description")]
         public Description? Description { get; init; }
 
+        /// <summary>
+        /// Postman allows you to version your collections as they grow, and this field holds the version number. While optional, it is recommended that you use this field to its fullest extent!
+        /// </summary>
         [JsonConverter(typeof(VersionJsonConverter))]
         [JsonPropertyName("version")]
         public Version? Version { get; init; }
@@ -125,12 +131,135 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         [JsonPropertyName("url")]
         public SourceUri? Url { get; init; }
 
-        // auth
-        // proxy
-        // certificate
-        // description
-        // header
-        // body
+        [JsonPropertyName("auth")]
+        public Authentication? Authentication { get; init; }
+
+        // TODO: implement HeaderJsonConverter
+        //[JsonConverter(typeof(HeaderJsonConverter))]
+        [JsonPropertyName("header")]
+        public Header[]? Headers { get; init; }
+
+        [JsonPropertyName("body")]
+        public Body? body { get; init; }
+
+        // TODO: implement 'proxy' property
+        // TODO: implement 'certificate' property
+
+        [JsonConverter(typeof(DescriptionJsonConverter))]
+        [JsonPropertyName("description")]
+        public Description? Description { get; init; }
+    }
+
+    public record Body
+    {
+        [JsonPropertyName("mode")]
+        public string? Mode { get; init; }
+
+        [JsonPropertyName("raw")]
+        public string? Raw { get; init; }
+
+        [JsonPropertyName("graphql")]
+        public string? GraphQl { get; init; }
+
+        [JsonPropertyName("urlencoded")]
+        public UrlEncodedParameter[]? UrlEncoded { get; init; }
+
+        [JsonPropertyName("formdata")]
+        public FormParameter[]? FormData { get; init; }
+
+        [JsonPropertyName("file")]
+        public File? File { get; init; }
+
+        [JsonPropertyName("options")]
+        public Options? Options { get; init; }
+
+        [JsonPropertyName("disabled")]
+        public bool Disabled { get; init; }
+
+        [JsonConverter(typeof(DescriptionJsonConverter))]
+        [JsonPropertyName("description")]
+        public Description? Description { get; init; }
+    }
+
+    public record Options
+    {
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement>? ExtensionData { get; init; }
+    }
+
+
+    public record File
+    {
+        [JsonPropertyName("src")]
+        public string? Source { get; init; }
+
+        [JsonPropertyName("content")]
+        public string? Content { get; init; }
+    }
+
+    [JsonDerivedType(typeof(FormValueParameter))]
+    [JsonDerivedType(typeof(FormFileParameter))]
+    public record FormParameter
+    {
+        [JsonPropertyName("key")]
+        public string Key { get; init; }
+
+        [JsonPropertyName("disabled")]
+        public bool? Disabled { get; init; }
+
+        [JsonPropertyName("type")]
+        public string? Type { get; init; }
+
+        [JsonPropertyName("contentType")]
+        public string? ContentType { get; init; }
+
+        [JsonConverter(typeof(DescriptionJsonConverter))]
+        [JsonPropertyName("description")]
+        public Description? Description { get; init; }
+    }
+
+    public record FormValueParameter : FormParameter
+    {
+        [JsonPropertyName("value")]
+        public string? Value { get; init; }
+    }
+
+    public record FormFileParameter : FormParameter
+    {
+        [JsonPropertyName("src")]
+        public string? Source { get; init; }
+    }
+
+    public record UrlEncodedParameter
+    {
+        [JsonPropertyName("key")]
+        public string Key { get; init; }
+
+        [JsonPropertyName("value")]
+        public string? Value { get; init; }
+
+        [JsonPropertyName("disabled")]
+        public bool? Disabled { get; init; }
+
+        [JsonConverter(typeof(DescriptionJsonConverter))]
+        [JsonPropertyName("description")]
+        public Description? Description { get; init; }
+    }
+
+    public record Header
+    {
+        [JsonPropertyName("key")]
+        public string? Key { get; init; }
+
+        [JsonPropertyName("value")]
+        public string? Value { get; init; }
+
+        [JsonPropertyName("disabled")]
+        public bool Disabled { get; init; }
+
+        [JsonConverter(typeof(DescriptionJsonConverter))]
+        [JsonPropertyName("description")]
+        public Description? Description { get; init; }
     }
 
     /// <summary>
@@ -145,32 +274,60 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
 
     public record Description
     {
+        /// <summary>
+        /// The content of the description goes here, as a raw string
+        /// </summary>
         [JsonPropertyName("content")]
         public string? Content { get; init; }
+
+        /// <summary>
+        /// Holds the mime type of the raw description content. E.g: 'text/markdown' or 'text/html'.
+        /// The type is used to correctly render the description when generating documentation, or in the Postman app.
+        /// </summary>
         [JsonPropertyName("type")]
         public string? Type { get; init; }
+
+        /// <summary>
+        /// Description can have versions associated with it, which should be put in this property.
+        /// </summary>
         [JsonPropertyName("version")]
         public string? Version { get; init; }
     }
 
+    /// <summary>
+    /// Collection versioning information
+    /// </summary>
     public record Version
     {
+        /// <summary>
+        /// Increment this number if you make changes to the collection that changes its behaviour. E.g: Removing or adding new test scripts. (partly or completely).
+        /// </summary>
         [JsonPropertyName("major")]
         public long Major { get; init; }
+
+        /// <summary>
+        /// You should increment this number if you make changes that will not break anything that uses the collection. E.g: removing a folder.
+        /// </summary>
         [JsonPropertyName("minor")]
         public long Minor { get; init; }
+
+        /// <summary>
+        /// Ideally, minor changes to a collection should result in the increment of this number
+        /// </summary>
         [JsonPropertyName("patch")]
         public long Patch { get; init; }
+
+        /// <summary>
+        /// A human friendly identifier to make sense of the version numbers. E.g: 'beta-3'
+        /// </summary>
         [JsonPropertyName("identifier")]
         public string? Identifier { get; init; }
+
+        /// <summary>
+        /// Additional information about the version. E.g: 'pre-release'
+        /// </summary>
         [JsonPropertyName("meta")]
         public string? Meta { get; init; }
-    }
-
-    public record Meta
-    {
-        [JsonExtensionData]
-        public Dictionary<string, JsonElement>? ExtensionData { get; init; }
     }
 
     public record Event
@@ -232,8 +389,6 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         [JsonPropertyName("variable")]
         public Variable[]? Variable { get; init; }
     }
-
-
 
     public record QueryParam
     {
