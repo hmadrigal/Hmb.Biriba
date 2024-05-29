@@ -1,13 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
 {
+    internal class JsonConvertUtils
+    {
+        internal static SourceUri CreateSourceUriFromRaw(string? raw)
+        {
+            Uri.TryCreate(raw, UriKind.Absolute, out Uri? uri);
+            NameValueCollection queryStringCollection = HttpUtility.ParseQueryString(uri?.Query ?? string.Empty);
+
+            var queryParams = (from key in queryStringCollection.AllKeys
+                               from value in queryStringCollection.GetValues(key) ?? []
+                               select new QueryParam { Key = key, Value = value }).ToArray();
+
+            if (queryParams.Length == 0)
+            {
+                queryParams = null;
+            }
+            SourceUri sourceUri = new SourceUri { Raw = raw, Protocol = uri?.Scheme, Port = uri?.Port.ToString(), Query = queryParams, Hash = uri?.Fragment };
+            return sourceUri;
+        }
+    }
     public class DescriptionJsonConverter : JsonConverter<Description>
     {
         public override Description? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -94,7 +115,14 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
     {
         public override Request? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            throw new NotImplementedException();
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                return new Request { Method = "GET", Url = JsonConvertUtils.CreateSourceUriFromRaw(reader.GetString()) };
+            }
+            else
+            {
+                return JsonSerializer.Deserialize<Request>(ref reader, options);
+            }
         }
 
         public override void Write(Utf8JsonWriter writer, Request value, JsonSerializerOptions options)
@@ -127,4 +155,50 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
             }
         }
     }
+
+    public class StringArrayJsonConverter : JsonConverter<string[]>
+    {
+        public override string[]? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                string? value = reader.GetString();
+                return value is null ? [] : [value];
+            }
+            return JsonSerializer.Deserialize<string[]?>(ref reader, options);
+        }
+
+        public override void Write(Utf8JsonWriter writer, string[] value, JsonSerializerOptions options)
+        {
+            if (value is null || value.Length > 1)
+            {
+                JsonSerializer.Serialize<string[]?>(writer, value, options);
+            }
+            else
+            {
+                JsonSerializer.Serialize<string?>(writer, value[0], options);
+            }
+        }
+    }
+
+    public class SourceUriJsonConvert : JsonConverter<SourceUri>
+    {
+        public override SourceUri? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                return JsonConvertUtils.CreateSourceUriFromRaw(reader.GetString());
+            }
+            else
+            {
+                return JsonSerializer.Deserialize<SourceUri>(ref reader, options);
+            }
+        }
+
+        public override void Write(Utf8JsonWriter writer, SourceUri value, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 }

@@ -59,8 +59,6 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public Version? Version { get; init; }
     }
 
-    [JsonDerivedType(typeof(FolderItem))]
-    [JsonDerivedType(typeof(RequestItem))]
     public record Item
     {
         [JsonPropertyName("name")]
@@ -78,30 +76,27 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
 
         [JsonPropertyName("protocolProfileBehavior")]
         public ProtocolProfileBehavior? ProtocolProfileBehavior { get; init; }
-    }
 
-    public record FolderItem : Item
-    {
+        #region FolderItem
         [JsonConverter(typeof(ItemArrayJsonConverter))]
         [JsonPropertyName("item")]
         public Item[]? Items { get; init; }
 
         [JsonPropertyName("auth")]
         public Authentication[]? Authentication { get; init; }
-    }
+        #endregion
 
-    public record RequestItem : Item
-    {
-
+        #region RequestItem
         [JsonPropertyName("id")]
         public string? Id { get; init; }
 
-        //[JsonConverter(typeof(RequestJsonConverter))]
-        //[JsonPropertyName("request")]
-        //public Request Request { get; init; }
+        [JsonConverter(typeof(RequestJsonConverter))]
+        [JsonPropertyName("request")]
+        public Request Request { get; init; }
 
         //[JsonPropertyName("response")]
         //public Response[]? Response { get; init; }
+        #endregion
     }
 
 
@@ -126,8 +121,9 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         [JsonPropertyName("method")]
         public string? Method { get; init; }
 
-        //[JsonPropertyName("url")]
-        //public SourceUri? Url { get; init; }
+        [JsonConverter(typeof(SourceUriJsonConvert))]
+        [JsonPropertyName("url")]
+        public SourceUri? Url { get; init; }
 
         // auth
         // proxy
@@ -189,10 +185,6 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public Script Script { get; init; }
     }
 
-    [JsonDerivedType(typeof(ScriptWithManyExecLinesAndRawSource))]
-    [JsonDerivedType(typeof(ScriptWithSingleExecLineAndRawSource))]
-    [JsonDerivedType(typeof(ScriptWithManyExecLinesAndObjectSource))]
-    [JsonDerivedType(typeof(ScriptWithSingleExecLineAndObjectSource))]
     public record Script
     {
         [JsonPropertyName("id")]
@@ -202,36 +194,12 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
 
         [JsonPropertyName("name")]
         public string? Name { get; init; }
-    }
 
-    public record ScriptWithManyExecLinesAndRawSource : Script
-    {
+        [JsonConverter(typeof(StringArrayJsonConverter))]
         [JsonPropertyName("exec")]
-        public string[] Script { get; init; }
-        [JsonPropertyName("src")]
-        public string? Source { get; init; }
-    }
+        public string[] ExecutableLines { get; init; }
 
-    public record ScriptWithSingleExecLineAndRawSource : Script
-    {
-        [JsonPropertyName("exec")]
-        public string Script { get; init; }
-        [JsonPropertyName("src")]
-        public string? Source { get; init; }
-    }
-
-    public record ScriptWithManyExecLinesAndObjectSource : Script
-    {
-        [JsonPropertyName("exec")]
-        public string[] Script { get; init; }
-        [JsonPropertyName("src")]
-        public SourceUri? Source { get; init; }
-    }
-
-    public record ScriptWithSingleExecLineAndObjectSource : Script
-    {
-        [JsonPropertyName("exec")]
-        public string Script { get; init; }
+        [JsonConverter(typeof(SourceUriJsonConvert))]
         [JsonPropertyName("src")]
         public SourceUri? Source { get; init; }
     }
