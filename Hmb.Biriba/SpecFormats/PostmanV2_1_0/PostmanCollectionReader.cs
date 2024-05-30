@@ -1,5 +1,6 @@
 ﻿using Hmb.Biriba.Models;
 using Hmb.Biriba.Serialization;
+using System.Web;
 
 namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0;
 
@@ -75,11 +76,14 @@ public class PostmanCollectionReader
                 {
                     parametricContent.MediaType = contentType ?? System.Net.Mime.MediaTypeNames.Application.FormUrlEncoded;
                     //parametricContent.Content = item.Request.Body.UrlEncoded;
+                    //parametricContent.Content = string.Join('&', item.Request.Body.UrlEncoded.Select(x => $"{HttpUtility.UrlEncode(x.Key)}={HttpUtility.UrlEncode(x.Value)}");
                 }
                 else if (item.Request.Body.FormData is not null && item.Request.Body.Mode == BodyMode.formdata)
                 {
                     parametricContent.MediaType = contentType ?? System.Net.Mime.MediaTypeNames.Multipart.FormData;
                     //parametricContent.Content = item.Request.Body.FormData;
+                    //MultipartContent multipartContent = new MultipartContent();
+                    //item.Request.Body.FormData
                 }
                 else if (item.Request.Body.File is not null && item.Request.Body.Mode == BodyMode.file)
                 {
