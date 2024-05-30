@@ -27,8 +27,8 @@ FileReader fileReader = serviceProvider.GetRequiredService<FileReader>();
 //    Console.WriteLine(parametricRequest);
 //}
 
-//string postmanFile = @"C:\Users\hfmad\Downloads\working-with-graphql.postman_collection.json";
-string postmanFile = @"https://raw.githubusercontent.com/Blazemeter/taurus/master/examples/functional/postman-sample-collection.json";
+string postmanFile = @"C:\Users\hfmad\Downloads\working-with-graphql.postman_collection.json";
+//string postmanFile = @"https://raw.githubusercontent.com/Blazemeter/taurus/master/examples/functional/postman-sample-collection.json";
 //string postmanFile = @"C:\Users\hfmad\Downloads\VehicleRegistrationAPI.com.postman_collection.json";
 //string postmanFile = @"C:\Users\hfmad\Downloads\api-documentation-reference.postman_collection.json";
 using Stream postmanFileStream = await fileReader.GetStreamAsync(postmanFile);

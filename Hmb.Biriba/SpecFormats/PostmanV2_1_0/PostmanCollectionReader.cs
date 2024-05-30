@@ -62,14 +62,10 @@ public class PostmanCollectionReader
 
             if (item.Request?.Body is not null)
             {
-                ParametricContent parametricContent = new   ParametricContent();
-                parametricContent.Content = item.Request.Body.Raw;
-                if (item.Request.Body.GraphQl is not null && item.Request.Body.Mode == BodyMode.graphql)
+                ParametricContent parametricContent = new ParametricContent();
+                if (item.Request.Body.Raw is not null && item.Request.Body.Mode == BodyMode.raw)
                 {
-                    // https://graphql.github.io/graphql-over-http/draft/#sec-Media-Types
-                    // application/graphql | application/json | application/graphql-response+json 
-                    parametricContent.MediaType = "application/graphql";
-                    //parametricContent.Content = item.Request.Body.GraphQl;
+                    parametricContent.Content = item.Request.Body.Raw;
                 }
                 else if (item.Request.Body.UrlEncoded is not null && item.Request.Body.Mode == BodyMode.urlencoded)
                 {
@@ -81,6 +77,19 @@ public class PostmanCollectionReader
                     parametricContent.MediaType = "multipart/form-data";
                     //parametricContent.Content = item.Request.Body.FormData;
                 }
+                else if (item.Request.Body.File is not null && item.Request.Body.Mode == BodyMode.file)
+                {
+                    parametricContent.MediaType = "application/octet-stream";
+                    //parametricContent.Content = item.Request.Body.File;
+                }
+                else if (item.Request.Body.GraphQl is not null && item.Request.Body.Mode == BodyMode.graphql)
+                {
+                    // https://graphql.github.io/graphql-over-http/draft/#sec-Media-Types
+                    // application/graphql | application/json | application/graphql-response+json 
+                    parametricContent.MediaType = "application/graphql";
+                    //parametricContent.Content = item.Request.Body.GraphQl;
+                }
+
 
             }
 
