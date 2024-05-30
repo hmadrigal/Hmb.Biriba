@@ -63,6 +63,9 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         [JsonConverter(typeof(VersionJsonConverter))]
         [JsonPropertyName("version")]
         public Version? Version { get; init; }
+
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement>? ExtensionData { get; init; }
     }
 
     public record Item
