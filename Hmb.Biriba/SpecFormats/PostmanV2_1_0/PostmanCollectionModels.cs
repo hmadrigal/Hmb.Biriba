@@ -3,7 +3,6 @@ using System.Text.Json;
 
 namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
 {
-
     public record PostmanCollectionDocument
     {
         [JsonPropertyName("info")]
@@ -108,7 +107,6 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         #endregion
     }
 
-
     //public record Response
     //{
     //    [JsonPropertyName("id")]
@@ -153,27 +151,6 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public Description? Description { get; init; }
     }
 
-    [JsonConverter(typeof(JsonStringEnumConverter<HttpMethods>))]
-
-    public enum HttpMethods
-    {
-        GET,
-        PUT,
-        POST,
-        PATCH,
-        DELETE,
-        COPY,
-        HEAD,
-        OPTIONS,
-        LINK,
-        UNLINK,
-        PURGE,
-        LOCK,
-        UNLOCK,
-        PROPFIND,
-        VIEW
-    }
-
     public record Body
     {
         [JsonPropertyName("mode")]
@@ -183,7 +160,7 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public string? Raw { get; init; }
 
         [JsonPropertyName("graphql")]
-        public string? GraphQl { get; init; }
+        public GraphQl? GraphQl { get; init; }
 
         [JsonPropertyName("urlencoded")]
         public UrlEncodedParameter[]? UrlEncoded { get; init; }
@@ -205,14 +182,10 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public Description? Description { get; init; }
     }
 
-    [JsonConverter(typeof(JsonStringEnumConverter<BodyMode>))]
-    public enum BodyMode
+    public record GraphQl
     {
-        raw,
-        urlencoded,
-        formdata,
-        file,
-        graphql
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement>? ExtensionData { get; init; }
     }
 
     public record Options
@@ -220,7 +193,6 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         [JsonExtensionData]
         public Dictionary<string, JsonElement>? ExtensionData { get; init; }
     }
-
 
     public record File
     {
@@ -465,15 +437,6 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public bool? Disabled { get; init; }
     }
 
-    [JsonConverter(typeof(JsonStringEnumConverter<VariableType>))]
-    public enum VariableType
-    {
-        @string,
-        boolean,
-        any,
-        number
-    }
-
     public record KeyValueType
     {
         [JsonPropertyName("key")]
@@ -517,6 +480,51 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public KeyValueType[]? OAuth2 { get; init; }
     }
 
+    public record NoAuth
+    {
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement>? ExtensionData { get; init; }
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter<HttpMethods>))]
+    public enum HttpMethods
+    {
+        GET,
+        PUT,
+        POST,
+        PATCH,
+        DELETE,
+        COPY,
+        HEAD,
+        OPTIONS,
+        LINK,
+        UNLINK,
+        PURGE,
+        LOCK,
+        UNLOCK,
+        PROPFIND,
+        VIEW
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter<BodyMode>))]
+    public enum BodyMode
+    {
+        raw,
+        urlencoded,
+        formdata,
+        file,
+        graphql
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter<VariableType>))]
+    public enum VariableType
+    {
+        @string,
+        boolean,
+        any,
+        number
+    }
+
     [JsonConverter(typeof(JsonStringEnumConverter<AuthType>))]
     public enum AuthType
     {
@@ -531,12 +539,6 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         oauth1,
         oauth2,
         ntlm
-    }
-
-    public record NoAuth
-    {
-        [JsonExtensionData]
-        public Dictionary<string, JsonElement>? ExtensionData { get; init; }
     }
 
 }
