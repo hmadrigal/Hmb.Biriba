@@ -73,17 +73,17 @@ public class PostmanCollectionReader
                 }
                 else if (item.Request.Body.UrlEncoded is not null && item.Request.Body.Mode == BodyMode.urlencoded)
                 {
-                    parametricContent.MediaType = contentType ?? "application/x-www-form-urlencoded";
+                    parametricContent.MediaType = contentType ?? System.Net.Mime.MediaTypeNames.Application.FormUrlEncoded;
                     //parametricContent.Content = item.Request.Body.UrlEncoded;
                 }
                 else if (item.Request.Body.FormData is not null && item.Request.Body.Mode == BodyMode.formdata)
                 {
-                    parametricContent.MediaType = contentType ?? "multipart/form-data";
+                    parametricContent.MediaType = contentType ?? System.Net.Mime.MediaTypeNames.Multipart.FormData;
                     //parametricContent.Content = item.Request.Body.FormData;
                 }
                 else if (item.Request.Body.File is not null && item.Request.Body.Mode == BodyMode.file)
                 {
-                    parametricContent.MediaType = contentType ?? "application/octet-stream";
+                    parametricContent.MediaType = contentType ?? System.Net.Mime.MediaTypeNames.Application.Octet;
                     //parametricContent.Content = item.Request.Body.File;
                 }
                 else if (item.Request.Body.GraphQl is not null && item.Request.Body.Mode == BodyMode.graphql)
@@ -93,8 +93,6 @@ public class PostmanCollectionReader
                     parametricContent.MediaType = contentType ?? "application/graphql";
                     //parametricContent.Content = item.Request.Body.GraphQl;
                 }
-
-
             }
 
             yield return parametricRequest;
