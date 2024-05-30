@@ -125,7 +125,7 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
     public record Request
     {
         [JsonPropertyName("method")]
-        public string? Method { get; init; }
+        public HttpMethods? Method { get; init; }
 
         [JsonConverter(typeof(SourceUriJsonConvert))]
         [JsonPropertyName("url")]
@@ -140,7 +140,7 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public Header[]? Headers { get; init; }
 
         [JsonPropertyName("body")]
-        public Body? body { get; init; }
+        public Body? Body { get; init; }
 
         // TODO: implement 'proxy' property
         // TODO: implement 'certificate' property
@@ -150,10 +150,31 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public Description? Description { get; init; }
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter<HttpMethods>))]
+
+    public enum HttpMethods
+    {
+        GET,
+        PUT,
+        POST,
+        PATCH,
+        DELETE,
+        COPY,
+        HEAD,
+        OPTIONS,
+        LINK,
+        UNLINK,
+        PURGE,
+        LOCK,
+        UNLOCK,
+        PROPFIND,
+        VIEW
+    }
+
     public record Body
     {
         [JsonPropertyName("mode")]
-        public string? Mode { get; init; }
+        public BodyMode? Mode { get; init; }
 
         [JsonPropertyName("raw")]
         public string? Raw { get; init; }
@@ -179,6 +200,16 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         [JsonConverter(typeof(DescriptionJsonConverter))]
         [JsonPropertyName("description")]
         public Description? Description { get; init; }
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter<BodyMode>))]
+    public enum BodyMode
+    {
+        raw,
+        urlencoded,
+        formdata,
+        file,
+        graphql
     }
 
     public record Options
@@ -249,10 +280,10 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
     public record Header
     {
         [JsonPropertyName("key")]
-        public string? Key { get; init; }
+        public string Key { get; init; }
 
         [JsonPropertyName("value")]
-        public string? Value { get; init; }
+        public string Value { get; init; }
 
         [JsonPropertyName("disabled")]
         public bool Disabled { get; init; }
@@ -407,21 +438,37 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
     {
         [JsonPropertyName("id")]
         public string? Id { get; init; }
+
         [JsonPropertyName("key")]
         public string? Key { get; init; }
+
         [JsonPropertyName("value")]
         public string? Value { get; init; }
+
         [JsonPropertyName("type")]
-        public string? Type { get; init; }
+        public VariableType? Type { get; init; }
+
         [JsonPropertyName("name")]
         public string? Name { get; init; }
+
         [JsonConverter(typeof(DescriptionJsonConverter))]
         [JsonPropertyName("description")]
         public Description? Description { get; init; }
+
         [JsonPropertyName("system")]
         public bool? System { get; init; }
+
         [JsonPropertyName("disabled")]
         public bool? Disabled { get; init; }
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter<VariableType>))]
+    public enum VariableType
+    {
+        @string,
+        boolean,
+        any,
+        number
     }
 
     public record KeyValueType
@@ -440,7 +487,7 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
     public record Authentication
     {
         [JsonPropertyName("type")]
-        public string? Type { get; init; }
+        public AuthType? Type { get; init; }
 
         [JsonPropertyName("noauth")]
         public NoAuth? NoAuth { get; init; }
@@ -465,6 +512,22 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         public KeyValueType[]? OAuth1 { get; init; }
         [JsonPropertyName("oauth2")]
         public KeyValueType[]? OAuth2 { get; init; }
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter<AuthType>))]
+    public enum AuthType
+    {
+        apikey,
+        awsv4,
+        basic,
+        bearer,
+        digest,
+        edgegrid,
+        hawk,
+        noauth,
+        oauth1,
+        oauth2,
+        ntlm
     }
 
     public record NoAuth

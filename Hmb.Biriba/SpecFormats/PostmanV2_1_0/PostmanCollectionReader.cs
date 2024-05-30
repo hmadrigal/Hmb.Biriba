@@ -14,7 +14,78 @@ public class PostmanCollectionReader
 
     public async IAsyncEnumerable<ParametricRequest> GetParametricRequestsAsync(Stream fileStream)
     {
-        var postmanDocument = await _jsonSerialization.DeserializeAsync<PostmanCollectionDocument>(fileStream);
-        yield break;
+        PostmanCollectionDocument? postmanDocument = await _jsonSerialization.DeserializeAsync<PostmanCollectionDocument>(fileStream);
+
+        if (postmanDocument?.Items is null || postmanDocument.Items.Length == 0)
+        {
+            yield break;
+        }
+        static IEnumerable<Item> GetAllItems(params Item[] items)
+        {
+            foreach (Item item in items)
+            {
+                if (item.Items is null)
+                {
+                    yield return item;
+                }
+                else
+                {
+                    foreach (Item nestedItem in item.Items)
+                    {
+                        foreach (Item subItem in GetAllItems(nestedItem))
+                        {
+                            yield return subItem;
+                        }
+                    }
+                }
+            }
+
+        }
+
+        foreach (Item item in GetAllItems(postmanDocument.Items))
+        {
+            if (item.Request is null)
+            {
+                continue;
+            }
+
+            ParametricRequest parametricRequest = new ParametricRequest();
+            parametricRequest.Method = item.Request.Method.ToString();
+            parametricRequest.Uri = item.Request.Url?.Raw;
+            if (item.Request?.Headers is not null)
+            {
+                foreach (Header header in item.Request.Headers)
+                {
+                    parametricRequest.Headers.Add(header.Key, header.Value);
+                }
+            }
+
+            if (item.Request?.Body is not null)
+            {
+                ParametricContent parametricContent = new   ParametricContent();
+                parametricContent.Content = item.Request.Body.Raw;
+                if (item.Request.Body.GraphQl is not null && item.Request.Body.Mode == BodyMode.graphql)
+                {
+                    // https://graphql.github.io/graphql-over-http/draft/#sec-Media-Types
+                    // application/graphql | application/json | application/graphql-response+json 
+                    parametricContent.MediaType = "application/graphql";
+                    //parametricContent.Content = item.Request.Body.GraphQl;
+                }
+                else if (item.Request.Body.UrlEncoded is not null && item.Request.Body.Mode == BodyMode.urlencoded)
+                {
+                    parametricContent.MediaType = "application/x-www-form-urlencoded";
+                    //parametricContent.Content = item.Request.Body.UrlEncoded;
+                }
+                else if (item.Request.Body.FormData is not null && item.Request.Body.Mode == BodyMode.formdata)
+                {
+                    parametricContent.MediaType = "multipart/form-data";
+                    //parametricContent.Content = item.Request.Body.FormData;
+                }
+
+            }
+
+            yield return parametricRequest;
+        }
+
     }
 }

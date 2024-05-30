@@ -117,7 +117,7 @@ namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0
         {
             if (reader.TokenType == JsonTokenType.String)
             {
-                return new Request { Method = "GET", Url = JsonConvertUtils.CreateSourceUriFromRaw(reader.GetString()) };
+                return new Request { Method = HttpMethods.GET, Url = JsonConvertUtils.CreateSourceUriFromRaw(reader.GetString()) };
             }
             else
             {
