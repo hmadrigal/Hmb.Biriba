@@ -63,30 +63,34 @@ public class PostmanCollectionReader
             if (item.Request?.Body is not null)
             {
                 ParametricContent parametricContent = new ParametricContent();
+                if (parametricRequest.Headers.TryGetValue("Content-Type", out string? contentType))
+                {
+                    parametricContent.MediaType = contentType;
+                }
                 if (item.Request.Body.Raw is not null && item.Request.Body.Mode == BodyMode.raw)
                 {
                     parametricContent.Content = item.Request.Body.Raw;
                 }
                 else if (item.Request.Body.UrlEncoded is not null && item.Request.Body.Mode == BodyMode.urlencoded)
                 {
-                    parametricContent.MediaType = "application/x-www-form-urlencoded";
+                    parametricContent.MediaType = contentType ?? "application/x-www-form-urlencoded";
                     //parametricContent.Content = item.Request.Body.UrlEncoded;
                 }
                 else if (item.Request.Body.FormData is not null && item.Request.Body.Mode == BodyMode.formdata)
                 {
-                    parametricContent.MediaType = "multipart/form-data";
+                    parametricContent.MediaType = contentType ?? "multipart/form-data";
                     //parametricContent.Content = item.Request.Body.FormData;
                 }
                 else if (item.Request.Body.File is not null && item.Request.Body.Mode == BodyMode.file)
                 {
-                    parametricContent.MediaType = "application/octet-stream";
+                    parametricContent.MediaType = contentType ?? "application/octet-stream";
                     //parametricContent.Content = item.Request.Body.File;
                 }
                 else if (item.Request.Body.GraphQl is not null && item.Request.Body.Mode == BodyMode.graphql)
                 {
                     // https://graphql.github.io/graphql-over-http/draft/#sec-Media-Types
                     // application/graphql | application/json | application/graphql-response+json 
-                    parametricContent.MediaType = "application/graphql";
+                    parametricContent.MediaType = contentType ?? "application/graphql";
                     //parametricContent.Content = item.Request.Body.GraphQl;
                 }
 
