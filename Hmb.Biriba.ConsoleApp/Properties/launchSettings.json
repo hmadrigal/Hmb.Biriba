@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Hmb.Biriba.ConsoleApp": {
+      "commandName": "Project",
+      "commandLineArgs": "scanner run --format PostmanV2_1_0 --spec C:\\Users\\hfmad\\Downloads\\urlencoded-file.postman_collection.json"
+    }
+  }
+}

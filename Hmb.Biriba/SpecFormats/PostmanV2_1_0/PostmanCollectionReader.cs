@@ -1,13 +1,15 @@
-﻿using Hmb.Biriba.Models;
+﻿using Hmb.Biriba.Scanner;
 using Hmb.Biriba.Serialization;
 using System.Web;
 
 namespace Hmb.Biriba.SpecFormats.PostmanV2_1_0;
 
-public class PostmanCollectionReader
+public class PostmanCollectionReader : ISpecFormatReader
 {
-    private readonly JsonSerialization _jsonSerialization;
+    public SpecReaderFormat Format => SpecReaderFormat.PostmanV2_1_0;
 
+    private readonly JsonSerialization _jsonSerialization;
+    
     public PostmanCollectionReader(JsonSerialization jsonSerialization)
     {
         _jsonSerialization = jsonSerialization;
@@ -63,40 +65,47 @@ public class PostmanCollectionReader
 
             if (item.Request?.Body is not null)
             {
-                ParametricContent parametricContent = new ParametricContent();
+                string? mediaType = null;
+                string? content = null;
+                IDictionary<string, string>? headers = null;
+
                 if (parametricRequest.Headers.TryGetValue("Content-Type", out string? contentType))
                 {
-                    parametricContent.MediaType = contentType;
+                    mediaType = contentType;
                 }
                 if (item.Request.Body.Raw is not null && item.Request.Body.Mode == BodyMode.raw)
                 {
-                    parametricContent.Content = item.Request.Body.Raw;
+                    content = item.Request.Body.Raw;
                 }
                 else if (item.Request.Body.UrlEncoded is not null && item.Request.Body.Mode == BodyMode.urlencoded)
                 {
-                    parametricContent.MediaType = contentType ?? System.Net.Mime.MediaTypeNames.Application.FormUrlEncoded;
-                    //parametricContent.Content = item.Request.Body.UrlEncoded;
-                    //parametricContent.Content = string.Join('&', item.Request.Body.UrlEncoded.Select(x => $"{HttpUtility.UrlEncode(x.Key)}={HttpUtility.UrlEncode(x.Value)}");
+                    mediaType = contentType ?? System.Net.Mime.MediaTypeNames.Application.FormUrlEncoded;
+                    content = string.Join('&', item.Request.Body.UrlEncoded.Select(x => $"{HttpUtility.UrlEncode(x.Key)}={HttpUtility.UrlEncode(x.Value)}"));
+                    //content = item.Request.Body.UrlEncoded;
                 }
                 else if (item.Request.Body.FormData is not null && item.Request.Body.Mode == BodyMode.formdata)
                 {
-                    parametricContent.MediaType = contentType ?? System.Net.Mime.MediaTypeNames.Multipart.FormData;
-                    //parametricContent.Content = item.Request.Body.FormData;
+                    mediaType = contentType ?? System.Net.Mime.MediaTypeNames.Multipart.FormData;
+                    //content = item.Request.Body.FormData;
                     //MultipartContent multipartContent = new MultipartContent();
                     //item.Request.Body.FormData
                 }
                 else if (item.Request.Body.File is not null && item.Request.Body.Mode == BodyMode.file)
                 {
-                    parametricContent.MediaType = contentType ?? System.Net.Mime.MediaTypeNames.Application.Octet;
-                    //parametricContent.Content = item.Request.Body.File;
+                    mediaType = contentType ?? System.Net.Mime.MediaTypeNames.Application.Octet;
+                    //content = item.Request.Body.File;
                 }
                 else if (item.Request.Body.GraphQl is not null && item.Request.Body.Mode == BodyMode.graphql)
                 {
                     // https://graphql.github.io/graphql-over-http/draft/#sec-Media-Types
                     // application/graphql | application/json | application/graphql-response+json 
-                    parametricContent.MediaType = contentType ?? "application/graphql";
-                    //parametricContent.Content = item.Request.Body.GraphQl;
+                    mediaType = contentType ?? "application/graphql";
+                    //content = item.Request.Body.GraphQl;
                 }
+
+
+                parametricRequest.Content = ParametricContentFactory.Create(mediaType, content, headers);
+
             }
 
             yield return parametricRequest;

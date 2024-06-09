@@ -1,10 +1,12 @@
-﻿using Hmb.Biriba.Models;
+﻿using Hmb.Biriba.Scanner;
 using Hmb.Biriba.Serialization;
 
 namespace Hmb.Biriba.SpecFormats.HttpArchiveV1_2;
 
-public class HttpArchiveReader
+public class HttpArchiveReader : ISpecFormatReader
 {
+    public SpecReaderFormat Format => SpecReaderFormat.HttpArchiveV1_2;
+
     private readonly JsonSerialization _jsonSerialization;
 
     public HttpArchiveReader(JsonSerialization jsonSerialization)
@@ -38,14 +40,14 @@ public class HttpArchiveReader
 
             if (entry.request?.postData is not null)
             {
-                ParametricContent parametricContent = new ParametricContent();
-                parametricContent.MediaType = entry.request.postData?.mimeType;
-                if (parametricContent.MediaType is null && parametricRequest.Headers.TryGetValue("Content-Type", out string? contentType))
+                string? mediaType = entry.request.postData?.mimeType;
+                if (mediaType is null && parametricRequest.Headers.TryGetValue("Content-Type", out string? contentType))
                 {
-                    parametricContent.MediaType = contentType;
+                    mediaType = contentType;
                 }
-                parametricContent.Content = entry.request.postData?.text;
-                parametricRequest.Content = parametricContent;
+                string? content = entry.request.postData?.text;
+
+                parametricRequest.Content = ParametricContentFactory.Create(mediaType, content, default);
             }
 
             if (entry.request?.queryString is not null)

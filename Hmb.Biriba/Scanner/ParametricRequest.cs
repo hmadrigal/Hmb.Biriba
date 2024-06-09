@@ -1,6 +1,6 @@
 ﻿using System.Collections.Specialized;
 
-namespace Hmb.Biriba.Models;
+namespace Hmb.Biriba.Scanner;
 
 public class ParametricRequest
 {
